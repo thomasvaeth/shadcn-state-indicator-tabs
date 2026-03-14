@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "animated-tabs",
+  "homepage": "http://localhost:3000",
+  "items": [
+    {
+      "name": "animated-tabs",
+      "type": "registry:ui",
+      "title": "Animated Tabs",
+      "description": "Shadcn-style tabs with an animated active indicator and a subtle hover and focus follower.",
+      "author": "Thomas Vaeth",
+      "dependencies": ["@radix-ui/react-tabs"],
+      "files": [
+        {
+          "path": "src/registry/animated-tabs/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    }
+  ]
+}
