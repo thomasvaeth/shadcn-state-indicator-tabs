@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/animat
 export default function HorizontalTabsShowcase() {
   return (
     <div className="w-full max-w-xl">
-      <h2 className="scroll-m-20 mb-4 text-xl font-semibold tracking-tight">Horizontal Tabs</h2>
       <Tabs defaultValue="overview">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -41,7 +40,7 @@ export default function HorizontalTabsShowcase() {
             description="Animation is used to clarify state, not decorate it."
             points={[
               'The indicator moves between tabs instead of blinking on and off.',
-              'Panel changes get a short entrance transition.',
+              'Hover and focus get their own follower instead of reusing the active state.',
               'The overall effect stays restrained and product-like.',
             ]}
           />

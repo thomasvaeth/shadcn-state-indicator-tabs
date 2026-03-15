@@ -1,8 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import TabContent from '@/components/tab-content';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/animated-tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/animated-tabs';
 
 const options = Array.from({ length: 9 }, (_, index) => {
   const value = `option-${index + 1}`;
@@ -10,12 +9,6 @@ const options = Array.from({ length: 9 }, (_, index) => {
   return {
     value,
     label: `Option ${index + 1}`,
-    description: `This option demonstrates how the active tab can be scrolled into view and centered when possible.`,
-    points: [
-      `Selecting ${value} smoothly scrolls the list so the trigger moves closer to the middle.`,
-      'This is especially useful once the list overflows on smaller screens.',
-      'It keeps the active tab from getting stranded at the far edges of the scroll area.',
-    ],
   };
 });
 
@@ -49,7 +42,6 @@ export default function ScrollableTabsShowcase() {
 
   return (
     <div className="w-full max-w-xl">
-      <h2 className="scroll-m-20 mb-4 text-xl font-semibold tracking-tight">Scrollable Tabs</h2>
       <Tabs value={value} onValueChange={setValue}>
         <div ref={scrollContainerRef} className="overflow-x-auto pb-2">
           <TabsList className="mb-0 min-w-max">
@@ -66,12 +58,6 @@ export default function ScrollableTabsShowcase() {
             ))}
           </TabsList>
         </div>
-
-        {options.map((option) => (
-          <TabsContent key={option.value} value={option.value}>
-            <TabContent name={option.label} description={option.description} points={option.points} />
-          </TabsContent>
-        ))}
       </Tabs>
     </div>
   );
