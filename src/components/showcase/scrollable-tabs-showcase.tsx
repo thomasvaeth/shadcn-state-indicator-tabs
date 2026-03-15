@@ -41,7 +41,7 @@ export default function ScrollableTabsShowcase() {
   }, [value]);
 
   return (
-    <div className="w-full max-w-xl">
+    <div>
       <Tabs value={value} onValueChange={setValue}>
         <div ref={scrollContainerRef} className="overflow-x-auto pb-2">
           <TabsList className="mb-0 min-w-max">

@@ -8,7 +8,7 @@ import ShowcaseSection from '@/components/showcase-section';
 
 export default function HomePage() {
   return (
-    <main className="container py-10">
+    <main className="mx-auto max-w-3xl px-6 py-10">
       <div className="space-y-2">
         <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight">Animated Tabs</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">

@@ -14,7 +14,9 @@ export default function ShowcaseSection({ title, description, children }: Showca
         <p className="max-w-2xl text-sm text-muted-foreground">{description}</p>
       </div>
 
-      <div className="rounded-xl border bg-card p-6 sm:p-8">{children}</div>
+      <div className="rounded-lg border">
+        <div className="flex min-h-[280px] items-center justify-center p-10">{children}</div>
+      </div>
     </section>
   );
 }

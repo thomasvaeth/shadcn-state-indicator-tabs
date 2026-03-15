@@ -3,57 +3,41 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/animated-ta
 
 export default function HorizontalTabsShowcase() {
   return (
-    <div className="w-full max-w-xl">
+    <div>
       <Tabs defaultValue="overview">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="design">Design</TabsTrigger>
-          <TabsTrigger value="motion">Motion</TabsTrigger>
-          <TabsTrigger value="delivery">Delivery</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="reports">Reports</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
           <TabContent
             name="Overview"
-            description="A direct replacement for the stock shadcn tabs primitive."
-            points={[
-              'Same Radix API and same overall mental model.',
-              'A moving indicator makes the active tab feel more obvious.',
-              'Content stays simple and easy to customize.',
-            ]}
+            description="View your key metrics and recent project activity. Track progress across all your active projects."
+            points={['You have 12 active projects and 3 pending tasks.']}
           />
         </TabsContent>
-        <TabsContent value="design">
+        <TabsContent value="analytics">
           <TabContent
-            name="Design"
-            description="A quieter visual style that still feels native to shadcn."
-            points={[
-              'Neutral surfaces and subtle borders keep the focus on content.',
-              'The hover state is there, but it does not overpower the layout.',
-              'It feels like a polished extension, not a new design system.',
-            ]}
+            name="Analytics"
+            description="Track performance and user engagement metrics. Monitor trends and identify growth opportunities."
+            points={['Page views are up 25% compared to last month.']}
           />
         </TabsContent>
-        <TabsContent value="motion">
+        <TabsContent value="reports">
           <TabContent
-            name="Motion"
-            description="Animation is used to clarify state, not decorate it."
-            points={[
-              'The indicator moves between tabs instead of blinking on and off.',
-              'Hover and focus get their own follower instead of reusing the active state.',
-              'The overall effect stays restrained and product-like.',
-            ]}
+            name="Reports"
+            description="Generate and download your detailed reports. Export data in multiple formats for analysis."
+            points={['You have 5 reports ready and available to export.']}
           />
         </TabsContent>
-        <TabsContent value="delivery">
+        <TabsContent value="settings">
           <TabContent
-            name="Delivery"
-            description="Best suited to the shadcn registry workflow."
-            points={[
-              'Consumers add the source file directly into their own codebase.',
-              'They can adjust spacing, colors, or timing without waiting on releases.',
-              'The registry item keeps installation simple and transparent.',
-            ]}
+            name="Settings"
+            description="Manage your account preferences and options. Customize your experience to fit your needs."
+            points={['Configure notifications, security, and themes.']}
           />
         </TabsContent>
       </Tabs>

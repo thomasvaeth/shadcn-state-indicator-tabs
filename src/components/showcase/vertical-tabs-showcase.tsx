@@ -2,17 +2,17 @@ import { Tabs, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
 
 export default function VerticalTabsShowcase() {
   return (
-    <div className="w-full max-w-xs">
-      <Tabs defaultValue="team">
+    <div>
+      <Tabs defaultValue="account">
         <TabsList className="sm:h-auto sm:w-40 sm:flex-col sm:items-stretch">
-          <TabsTrigger className="sm:justify-start" value="team">
-            Team
+          <TabsTrigger className="sm:justify-start" value="account">
+            Account
           </TabsTrigger>
-          <TabsTrigger className="sm:justify-start" value="product">
-            Product
+          <TabsTrigger className="sm:justify-start" value="password">
+            Password
           </TabsTrigger>
-          <TabsTrigger className="sm:justify-start" value="ship">
-            Ship
+          <TabsTrigger className="sm:justify-start" value="notifications">
+            Notifications
           </TabsTrigger>
         </TabsList>
       </Tabs>
