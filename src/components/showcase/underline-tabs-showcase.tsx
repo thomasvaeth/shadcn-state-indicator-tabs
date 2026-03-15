@@ -1,4 +1,4 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/animated-tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
 
 export default function UnderlineTabsShowcase() {
   return (

@@ -1,5 +1,4 @@
 import InstallationSection from '@/components/installation-section';
-import ContrastTabsShowcase from '@/components/showcase/contrast-tabs-showcase';
 import HorizontalTabsShowcase from '@/components/showcase/horizontal-tabs-showcase';
 import ManualActivationTabsShowcase from '@/components/showcase/manual-activation-tabs-showcase';
 import ScrollableTabsShowcase from '@/components/showcase/scrollable-tabs-showcase';
@@ -24,13 +23,6 @@ export default function HomePage() {
           description="The base registry version keeps the Radix tabs API intact and adds an animated active indicator with a separate hover and focus follower."
         >
           <HorizontalTabsShowcase />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Contrast"
-          description="A sharper treatment with a white container, a black active pill, a white hover surface, and mix-blend text that flips with the background."
-        >
-          <ContrastTabsShowcase />
         </ShowcaseSection>
 
         <ShowcaseSection

@@ -40,7 +40,6 @@ function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
 }
 
 type TabsListProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
-  wrapperClassName?: string;
   activeIndicatorClassName?: string;
   hoverIndicatorClassName?: string;
   fallbackActiveTriggerClassName?: string;
@@ -51,7 +50,6 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
   (
     {
       className,
-      wrapperClassName,
       activeIndicatorClassName,
       hoverIndicatorClassName,
       fallbackActiveTriggerClassName,
@@ -228,7 +226,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
 
     return (
       <TabsIndicatorContext.Provider value={{ isIndicatorReady, fallbackActiveTriggerClassName }}>
-        <div className={cn('relative', wrapperClassName)} ref={tabsListRef}>
+        <div className="relative" ref={tabsListRef}>
           <TabsPrimitive.List
             ref={ref}
             data-slot="tabs-list"

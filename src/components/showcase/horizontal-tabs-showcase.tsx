@@ -1,5 +1,5 @@
 import TabContent from '@/components/tab-content';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/animated-tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
 
 export default function HorizontalTabsShowcase() {
   return (

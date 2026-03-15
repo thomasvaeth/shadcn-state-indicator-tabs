@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/animated-tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
 
 const options = Array.from({ length: 9 }, (_, index) => {
   const value = `option-${index + 1}`;
