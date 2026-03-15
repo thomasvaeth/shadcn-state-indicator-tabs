@@ -8,8 +8,7 @@ export default function UnderlineTabsShowcase() {
           className="bg-transparent text-zinc-500 h-10 rounded-none border-b border-zinc-200 p-0"
           activeIndicatorClassName="rounded-full border-0 bg-zinc-950 shadow-none"
           hoverIndicatorClassName="rounded-full border-0 bg-zinc-300"
-          fallbackActiveTriggerClassName="data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-zinc-950 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-          indicatorVariant="underline"
+          variant="line"
         >
           <TabsTrigger className="data-[state=active]:text-zinc-950 rounded-none border-0 px-4" value="signal">
             Signal

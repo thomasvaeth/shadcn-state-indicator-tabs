@@ -11,17 +11,19 @@ const EMPTY_INDICATOR_STYLE = {
   height: 0,
 };
 
-type IndicatorVariant = 'pill' | 'underline';
+type TabsListVariant = 'default' | 'line';
 
-const INDICATOR_BASE_CLASSNAME = 'pointer-events-none absolute rounded-md duration-200 ease-out';
+const INDICATOR_BASE_CLASSNAME = 'absolute border rounded-md pointer-events-none duration-200 ease-out';
 
 const TabsIndicatorContext = React.createContext({
-  isIndicatorReady: false,
-  fallbackActiveTriggerClassName: undefined as string | undefined,
+  showIndicators: false,
+  variant: 'default' as TabsListVariant,
 });
 
-function getIndicatorStyle(style: typeof EMPTY_INDICATOR_STYLE, variant: IndicatorVariant) {
-  if (variant === 'underline') {
+// The line variant reuses the same measured tab rectangle but collapses it
+// down to a 2px bar at the bottom edge.
+function getIndicatorStyle(style: typeof EMPTY_INDICATOR_STYLE, variant: TabsListVariant) {
+  if (variant === 'line') {
     const underlineHeight = 2;
 
     return {
@@ -35,6 +37,14 @@ function getIndicatorStyle(style: typeof EMPTY_INDICATOR_STYLE, variant: Indicat
   return style;
 }
 
+function getInitialActiveTriggerClassName(variant: TabsListVariant) {
+  if (variant === 'line') {
+    return "data-[state=active]:rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:bottom-0 data-[state=active]:after:h-0.5 data-[state=active]:after:rounded-full data-[state=active]:after:bg-current data-[state=active]:after:content-['']";
+  }
+
+  return 'data-[state=active]:bg-background data-[state=active]:shadow-sm';
+}
+
 function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return <TabsPrimitive.Root data-slot="tabs" className={cn('flex flex-col gap-2', className)} {...props} />;
 }
@@ -42,33 +52,24 @@ function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
 type TabsListProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
   activeIndicatorClassName?: string;
   hoverIndicatorClassName?: string;
-  fallbackActiveTriggerClassName?: string;
-  indicatorVariant?: IndicatorVariant;
+  variant?: TabsListVariant;
 };
 
 const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>, TabsListProps>(
-  (
-    {
-      className,
-      activeIndicatorClassName,
-      hoverIndicatorClassName,
-      fallbackActiveTriggerClassName,
-      indicatorVariant = 'pill',
-      ...props
-    },
-    ref,
-  ) => {
+  ({ className, activeIndicatorClassName, hoverIndicatorClassName, variant = 'default', ...props }, ref) => {
     const [activeIndicatorStyle, setActiveIndicatorStyle] = React.useState(EMPTY_INDICATOR_STYLE);
     const [hoverIndicatorStyle, setHoverIndicatorStyle] = React.useState(EMPTY_INDICATOR_STYLE);
     const [isHoverIndicatorVisible, setIsHoverIndicatorVisible] = React.useState(false);
     const [isHoverIndicatorResetting, setIsHoverIndicatorResetting] = React.useState(false);
-    const [isIndicatorReady, setIsIndicatorReady] = React.useState(false);
-    const [isActiveIndicatorTransitionEnabled, setIsActiveIndicatorTransitionEnabled] = React.useState(false);
+    const [showIndicators, setShowIndicators] = React.useState(false);
+    const [canAnimateActiveIndicator, setCanAnimateActiveIndicator] = React.useState(false);
 
     const tabsListRef = React.useRef<HTMLDivElement | null>(null);
     const hoveredTabRef = React.useRef<HTMLElement | null>(null);
     const hasEnabledActiveIndicatorTransitionRef = React.useRef(false);
 
+    // All indicator positioning is measured relative to the tab list wrapper so
+    // the active and hover layers can move independently of the trigger markup.
     const getRelativeIndicatorStyle = React.useCallback((tab: HTMLElement) => {
       if (!tabsListRef.current) {
         return EMPTY_INDICATOR_STYLE;
@@ -85,36 +86,24 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
       };
     }, []);
 
-    const updateIndicator = React.useCallback(
-      (markReady = false) => {
-        if (!tabsListRef.current) {
-          return;
-        }
+    const updateIndicator = React.useCallback(() => {
+      if (!tabsListRef.current) {
+        return;
+      }
 
-        const activeTab = tabsListRef.current.querySelector<HTMLElement>('[data-state="active"]');
-        if (!activeTab) {
-          return;
-        }
+      const activeTab = tabsListRef.current.querySelector<HTMLElement>('[data-state="active"]');
+      if (!activeTab) {
+        return;
+      }
 
-        requestAnimationFrame(() => {
-          const activeStyle = getRelativeIndicatorStyle(activeTab);
-          setActiveIndicatorStyle(activeStyle);
-          if (!hoveredTabRef.current) {
-            setHoverIndicatorStyle(activeStyle);
-          }
-          if (markReady) {
-            setIsIndicatorReady(true);
-            if (!hasEnabledActiveIndicatorTransitionRef.current) {
-              hasEnabledActiveIndicatorTransitionRef.current = true;
-              requestAnimationFrame(() => {
-                setIsActiveIndicatorTransitionEnabled(true);
-              });
-            }
-          }
-        });
-      },
-      [getRelativeIndicatorStyle],
-    );
+      requestAnimationFrame(() => {
+        const activeStyle = getRelativeIndicatorStyle(activeTab);
+        setActiveIndicatorStyle(activeStyle);
+        if (!hoveredTabRef.current) {
+          setHoverIndicatorStyle(activeStyle);
+        }
+      });
+    }, [getRelativeIndicatorStyle]);
 
     const updateHoverIndicator = React.useCallback(
       (tab: HTMLElement | null) => {
@@ -149,12 +138,29 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
       }
 
       requestAnimationFrame(() => {
+        // Reset the hidden hover layer back to the active tab so the next hover
+        // animates out from the selected state instead of the previously
+        // hovered trigger.
         setHoverIndicatorStyle(getRelativeIndicatorStyle(activeTab));
       });
     }, [getRelativeIndicatorStyle]);
 
     React.useEffect(() => {
-      const timeoutId = window.setTimeout(() => updateIndicator(true), 0);
+      // Let the selected trigger render the initial active styling first, then
+      // reveal the overlay indicators after the client has measured them.
+      const timeoutId = window.setTimeout(() => {
+        updateIndicator();
+        requestAnimationFrame(() => {
+          setShowIndicators(true);
+          if (!hasEnabledActiveIndicatorTransitionRef.current) {
+            hasEnabledActiveIndicatorTransitionRef.current = true;
+            requestAnimationFrame(() => {
+              setCanAnimateActiveIndicator(true);
+            });
+          }
+        });
+      }, 0);
+
       const handleResize = () => {
         updateIndicator();
         if (hoveredTabRef.current) {
@@ -225,7 +231,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
     }, [resetHoverIndicator, updateHoverIndicator, updateIndicator]);
 
     return (
-      <TabsIndicatorContext.Provider value={{ isIndicatorReady, fallbackActiveTriggerClassName }}>
+      <TabsIndicatorContext.Provider value={{ showIndicators, variant }}>
         <div className="relative" ref={tabsListRef}>
           <TabsPrimitive.List
             ref={ref}
@@ -239,22 +245,22 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
           <div
             className={cn(
               INDICATOR_BASE_CLASSNAME,
-              'border border-sky-200/80 bg-sky-100/70',
+              'border-sky-200/80 bg-sky-100/70',
               hoverIndicatorClassName,
               isHoverIndicatorResetting ? 'transition-[opacity]' : 'transition-[left,top,width,height,opacity]',
-              (!isIndicatorReady || !isHoverIndicatorVisible) && 'opacity-0',
+              (!showIndicators || !isHoverIndicatorVisible) && 'opacity-0',
             )}
-            style={getIndicatorStyle(hoverIndicatorStyle, indicatorVariant)}
+            style={getIndicatorStyle(hoverIndicatorStyle, variant)}
           />
           <div
             className={cn(
               INDICATOR_BASE_CLASSNAME,
-              'bg-background border border-transparent shadow-sm',
-              isActiveIndicatorTransitionEnabled ? 'transition-[left,top,width,height,opacity]' : 'transition-none',
+              'bg-background border-transparent shadow-sm',
+              canAnimateActiveIndicator ? 'transition-[left,top,width,height,opacity]' : 'transition-none',
               activeIndicatorClassName,
-              !isIndicatorReady && 'opacity-0',
+              !showIndicators && 'opacity-0',
             )}
-            style={getIndicatorStyle(activeIndicatorStyle, indicatorVariant)}
+            style={getIndicatorStyle(activeIndicatorStyle, variant)}
           />
         </div>
       </TabsIndicatorContext.Provider>
@@ -267,16 +273,15 @@ const TabsTrigger = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
 >(({ className, ...props }, ref) => {
-  const { isIndicatorReady, fallbackActiveTriggerClassName } = React.useContext(TabsIndicatorContext);
+  const { showIndicators, variant } = React.useContext(TabsIndicatorContext);
 
   return (
     <TabsPrimitive.Trigger
       ref={ref}
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:text-foreground z-10 inline-flex h-[calc(100%-1px)] flex-1 select-none items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        !isIndicatorReady && 'data-[state=active]:bg-background data-[state=active]:shadow-sm',
-        !isIndicatorReady && fallbackActiveTriggerClassName,
+        "data-[state=active]:text-foreground relative z-10 inline-flex h-[calc(100%-1px)] flex-1 select-none items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        !showIndicators && getInitialActiveTriggerClassName(variant),
         className,
       )}
       {...props}
@@ -288,14 +293,16 @@ TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 const TabsContent = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Content
-    ref={ref}
-    data-slot="tabs-content"
-    className={cn('mt-2 flex-1 outline-none', className)}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  return (
+    <TabsPrimitive.Content
+      ref={ref}
+      data-slot="tabs-content"
+      className={cn('mt-2 flex-1 outline-none', className)}
+      {...props}
+    />
+  );
+});
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 export { Tabs, TabsContent, TabsList, TabsTrigger };
