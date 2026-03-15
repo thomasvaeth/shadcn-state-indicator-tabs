@@ -16,7 +16,14 @@ const ZERO_RECT = {
 };
 
 // Shared base styles applied to both indicator overlay elements.
-const INDICATOR_BASE_CLASSNAME = 'absolute border rounded-md pointer-events-none duration-200 ease-out';
+const INDICATOR_BASE_CLASSNAMES = 'absolute border rounded-md pointer-events-none duration-200 ease-out';
+
+// CSS applied directly to the active trigger before the overlay indicators load.
+// Once showIndicators is true these classes are removed — the overlay takes over.
+const INITIAL_ACTIVE_TRIGGER_CLASSNAMES: Record<TabsListVariant, string> = {
+  default: 'data-[state=active]:bg-background data-[state=active]:shadow-sm',
+  line: "data-[state=active]:rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:bottom-0 data-[state=active]:after:h-0.5 data-[state=active]:after:rounded-full data-[state=active]:after:bg-current data-[state=active]:after:content-['']",
+};
 
 // Context lets TabsTrigger know when the indicator overlays have taken over
 // so it can stop rendering its own active background/border styling.
@@ -40,16 +47,6 @@ function getIndicatorStyle(rect: typeof ZERO_RECT, variant: TabsListVariant) {
   }
 
   return rect;
-}
-
-// CSS applied directly to the active trigger before the overlay indicators load.
-// Once showIndicators is true these classes are removed — the overlay takes over.
-function getInitialActiveTriggerClassName(variant: TabsListVariant) {
-  if (variant === 'line') {
-    return "data-[state=active]:rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:bottom-0 data-[state=active]:after:h-0.5 data-[state=active]:after:rounded-full data-[state=active]:after:bg-current data-[state=active]:after:content-['']";
-  }
-
-  return 'data-[state=active]:bg-background data-[state=active]:shadow-sm';
 }
 
 function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {
@@ -295,7 +292,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
           {/* Hover indicator — follows the pointer and keyboard focus */}
           <div
             className={cn(
-              INDICATOR_BASE_CLASSNAME,
+              INDICATOR_BASE_CLASSNAMES,
               'border-sky-200/80 bg-sky-100/70',
               hoverIndicatorClassName,
               // While resetting, only transition opacity so the indicator fades out
@@ -308,7 +305,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
           {/* Active indicator — follows the selected tab */}
           <div
             className={cn(
-              INDICATOR_BASE_CLASSNAME,
+              INDICATOR_BASE_CLASSNAMES,
               'bg-background border-transparent shadow-sm',
               // Transitions are disabled until after the first reveal so the indicator
               // appears at the correct position without animating in from 0,0.
@@ -339,7 +336,7 @@ const TabsTrigger = React.forwardRef<
         "data-[state=active]:text-foreground relative z-10 inline-flex h-[calc(100%-1px)] flex-1 select-none items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         // Before the overlay indicators are ready, the trigger renders its own
         // active background so there's no flash of unstyled content on load.
-        !showIndicators && getInitialActiveTriggerClassName(variant),
+        !showIndicators && INITIAL_ACTIVE_TRIGGER_CLASSNAMES[variant],
         className,
       )}
       {...props}
