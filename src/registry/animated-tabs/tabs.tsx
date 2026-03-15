@@ -4,39 +4,46 @@ import * as React from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { cn } from '@/lib/utils';
 
-const EMPTY_INDICATOR_STYLE = {
-  left: 0,
-  top: 0,
-  width: 0,
-  height: 0,
-};
-
 type TabsListVariant = 'default' | 'line';
 
+// Safe initial value for indicator positions. Indicators are hidden (opacity-0)
+// until properly measured, so this position is never visible to the user.
+const ZERO_RECT = {
+  top: 0,
+  left: 0,
+  height: 0,
+  width: 0,
+};
+
+// Shared base styles applied to both indicator overlay elements.
 const INDICATOR_BASE_CLASSNAME = 'absolute border rounded-md pointer-events-none duration-200 ease-out';
 
+// Context lets TabsTrigger know when the indicator overlays have taken over
+// so it can stop rendering its own active background/border styling.
 const TabsIndicatorContext = React.createContext({
   showIndicators: false,
   variant: 'default' as TabsListVariant,
 });
 
-// The line variant reuses the same measured tab rectangle but collapses it
-// down to a 2px bar at the bottom edge.
-function getIndicatorStyle(style: typeof EMPTY_INDICATOR_STYLE, variant: TabsListVariant) {
+// For the "line" variant, collapse the measured tab rect into a 2px underline
+// at the bottom edge instead of a full-size background pill.
+function getIndicatorStyle(rect: typeof ZERO_RECT, variant: TabsListVariant) {
   if (variant === 'line') {
     const underlineHeight = 2;
 
     return {
-      left: style.left,
-      top: style.top + Math.max(style.height - underlineHeight, 0),
-      width: style.width,
+      top: rect.top + Math.max(rect.height - underlineHeight, 0),
+      left: rect.left,
       height: underlineHeight,
+      width: rect.width,
     };
   }
 
-  return style;
+  return rect;
 }
 
+// CSS applied directly to the active trigger before the overlay indicators load.
+// Once showIndicators is true these classes are removed — the overlay takes over.
 function getInitialActiveTriggerClassName(variant: TabsListVariant) {
   if (variant === 'line') {
     return "data-[state=active]:rounded-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:absolute data-[state=active]:after:inset-x-0 data-[state=active]:after:bottom-0 data-[state=active]:after:h-0.5 data-[state=active]:after:rounded-full data-[state=active]:after:bg-current data-[state=active]:after:content-['']";
@@ -50,130 +57,152 @@ function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
 }
 
 type TabsListProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
+  // Override the active indicator's appearance (position is still measured automatically).
   activeIndicatorClassName?: string;
+  // Override the hover/focus indicator's appearance.
   hoverIndicatorClassName?: string;
+  // "default" = pill background; "line" = 2px underline.
   variant?: TabsListVariant;
 };
 
+// Visibility states for the hover indicator:
+//   hidden    – not visible (pointer/focus is outside the tab list)
+//   visible   – showing and tracking the current tab
+//   resetting – pointer just left; fade out in place (position transition disabled
+//               so the indicator doesn't slide back toward the active tab)
+type HoverIndicatorState = 'hidden' | 'visible' | 'resetting';
+
 const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>, TabsListProps>(
   ({ className, activeIndicatorClassName, hoverIndicatorClassName, variant = 'default', ...props }, ref) => {
-    const [activeIndicatorStyle, setActiveIndicatorStyle] = React.useState(EMPTY_INDICATOR_STYLE);
-    const [hoverIndicatorStyle, setHoverIndicatorStyle] = React.useState(EMPTY_INDICATOR_STYLE);
-    const [isHoverIndicatorVisible, setIsHoverIndicatorVisible] = React.useState(false);
-    const [isHoverIndicatorResetting, setIsHoverIndicatorResetting] = React.useState(false);
+    // Positions of the two indicator overlays, measured relative to the tab list container.
+    const [activeIndicatorStyle, setActiveIndicatorStyle] = React.useState(ZERO_RECT);
+    const [hoverIndicatorStyle, setHoverIndicatorStyle] = React.useState(ZERO_RECT);
+
+    // Three-phase initialization (prevents the indicator from visibly animating in on load):
+    //   Phase 1 – First render: triggers render their own active styling; overlays are hidden.
+    //   Phase 2 – After mount: measure the active tab, place the overlay at the correct position
+    //             with no transition, then reveal it (showIndicators = true).
+    //   Phase 3 – Next frame: enable CSS transitions so subsequent tab clicks animate smoothly.
     const [showIndicators, setShowIndicators] = React.useState(false);
     const [canAnimateActiveIndicator, setCanAnimateActiveIndicator] = React.useState(false);
 
+    const [hoverState, setHoverState] = React.useState<HoverIndicatorState>('hidden');
+
     const tabsListRef = React.useRef<HTMLDivElement | null>(null);
     const hoveredTabRef = React.useRef<HTMLElement | null>(null);
-    const hasEnabledActiveIndicatorTransitionRef = React.useRef(false);
+    // Guard so the one-time transition-enable logic only fires once even if the
+    // effect re-runs (stable deps mean it won't, but this is a safety net).
+    const transitionEnabledRef = React.useRef(false);
 
-    // All indicator positioning is measured relative to the tab list wrapper so
-    // the active and hover layers can move independently of the trigger markup.
-    const getRelativeIndicatorStyle = React.useCallback((tab: HTMLElement) => {
+    // Returns a tab element's bounding rect relative to the tab list container.
+    const measureTab = React.useCallback((tab: HTMLElement): typeof ZERO_RECT => {
       if (!tabsListRef.current) {
-        return EMPTY_INDICATOR_STYLE;
+        return ZERO_RECT;
       }
 
       const tabRect = tab.getBoundingClientRect();
-      const tabsRect = tabsListRef.current.getBoundingClientRect();
+      const tabListRect = tabsListRef.current.getBoundingClientRect();
 
       return {
-        left: tabRect.left - tabsRect.left,
-        top: tabRect.top - tabsRect.top,
-        width: tabRect.width,
+        top: tabRect.top - tabListRect.top,
+        left: tabRect.left - tabListRect.left,
         height: tabRect.height,
+        width: tabRect.width,
       };
     }, []);
 
-    const updateIndicator = React.useCallback(() => {
+    // Moves the active indicator to whichever trigger has data-state="active".
+    // Also parks the hover indicator on that tab when nothing is hovered, so
+    // the first hover of a session animates out from the selected tab.
+    const updateActiveIndicator = React.useCallback(() => {
       if (!tabsListRef.current) {
         return;
       }
 
       const activeTab = tabsListRef.current.querySelector<HTMLElement>('[data-state="active"]');
+
       if (!activeTab) {
         return;
       }
 
       requestAnimationFrame(() => {
-        const activeStyle = getRelativeIndicatorStyle(activeTab);
-        setActiveIndicatorStyle(activeStyle);
+        const rect = measureTab(activeTab);
+
+        setActiveIndicatorStyle(rect);
+
         if (!hoveredTabRef.current) {
-          setHoverIndicatorStyle(activeStyle);
+          setHoverIndicatorStyle(rect);
         }
       });
-    }, [getRelativeIndicatorStyle]);
+    }, [measureTab]);
 
+    // Moves the hover indicator to the given tab and makes it visible.
     const updateHoverIndicator = React.useCallback(
-      (tab: HTMLElement | null) => {
+      (tab: HTMLElement) => {
         hoveredTabRef.current = tab;
 
-        if (!tab) {
-          setIsHoverIndicatorVisible(false);
-          return;
-        }
+        setHoverState('visible');
 
-        setIsHoverIndicatorResetting(false);
         requestAnimationFrame(() => {
-          setHoverIndicatorStyle(getRelativeIndicatorStyle(tab));
-          setIsHoverIndicatorVisible(true);
+          setHoverIndicatorStyle(measureTab(tab));
         });
       },
-      [getRelativeIndicatorStyle],
+      [measureTab],
     );
 
+    // Called when the pointer or focus leaves the tab list entirely.
+    // Switches to "resetting" so the indicator fades out without sliding back,
+    // then snaps it to the active tab position so the next hover starts from there.
     const resetHoverIndicator = React.useCallback(() => {
       hoveredTabRef.current = null;
-      setIsHoverIndicatorResetting(true);
-      setIsHoverIndicatorVisible(false);
+
+      setHoverState('resetting');
 
       if (!tabsListRef.current) {
         return;
       }
 
       const activeTab = tabsListRef.current.querySelector<HTMLElement>('[data-state="active"]');
+
       if (!activeTab) {
         return;
       }
 
       requestAnimationFrame(() => {
-        // Reset the hidden hover layer back to the active tab so the next hover
-        // animates out from the selected state instead of the previously
-        // hovered trigger.
-        setHoverIndicatorStyle(getRelativeIndicatorStyle(activeTab));
+        setHoverIndicatorStyle(measureTab(activeTab));
       });
-    }, [getRelativeIndicatorStyle]);
+    }, [measureTab]);
 
     React.useEffect(() => {
-      // Let the selected trigger render the initial active styling first, then
-      // reveal the overlay indicators after the client has measured them.
-      const timeoutId = window.setTimeout(() => {
-        updateIndicator();
+      // Phase 1 → 2: wait one tick for Radix to stamp data-state="active" onto
+      // the correct trigger, then measure and position the active indicator.
+      const timeout = setTimeout(() => {
+        updateActiveIndicator();
+
+        // Phase 2: make indicators visible now that they are in the right position.
         requestAnimationFrame(() => {
           setShowIndicators(true);
-          if (!hasEnabledActiveIndicatorTransitionRef.current) {
-            hasEnabledActiveIndicatorTransitionRef.current = true;
-            requestAnimationFrame(() => {
-              setCanAnimateActiveIndicator(true);
-            });
+
+          // Phase 3: enable transitions one frame after reveal so the indicator
+          // appears in place rather than sliding in from 0,0.
+          if (!transitionEnabledRef.current) {
+            transitionEnabledRef.current = true;
+
+            requestAnimationFrame(() => setCanAnimateActiveIndicator(true));
           }
         });
       }, 0);
 
-      const handleResize = () => {
-        updateIndicator();
-        if (hoveredTabRef.current) {
-          updateHoverIndicator(hoveredTabRef.current);
-        }
-      };
-
       const handlePointerMove = (event: PointerEvent) => {
+        // Delegate from the list rather than individual triggers so the handler
+        // works even if tabs are dynamically added or removed.
         const tab = (event.target as HTMLElement | null)?.closest<HTMLElement>('[role="tab"]');
+
         if (!tab || !tabsListRef.current?.contains(tab)) {
           return;
         }
 
+        // already tracking this tab
         if (hoveredTabRef.current === tab) {
           return;
         }
@@ -181,12 +210,11 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
         updateHoverIndicator(tab);
       };
 
-      const handlePointerLeave = () => {
-        resetHoverIndicator();
-      };
-
       const handleFocusIn = (event: FocusEvent) => {
+        // Keyboard focus drives the same hover indicator so users see the
+        // preview move as they navigate with arrow keys.
         const tab = (event.target as HTMLElement | null)?.closest<HTMLElement>('[role="tab"]');
+
         if (!tab || !tabsListRef.current?.contains(tab)) {
           return;
         }
@@ -195,7 +223,10 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
       };
 
       const handleFocusOut = (event: FocusEvent) => {
+        // Only reset if focus is truly leaving the tab list, not just moving
+        // between triggers within it.
         const nextFocused = event.relatedTarget;
+
         if (nextFocused instanceof Node && tabsListRef.current?.contains(nextFocused)) {
           return;
         }
@@ -203,32 +234,51 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
         resetHoverIndicator();
       };
 
-      window.addEventListener('resize', handleResize);
+      // MutationObserver detects Radix attribute changes (data-state="active") so
+      // we don't need to wire into every trigger's onClick individually.
+      const mutationObserver = new MutationObserver(() => updateActiveIndicator());
 
-      const observer = new MutationObserver(() => updateIndicator());
-      const tabsListElement = tabsListRef.current;
-      if (tabsListElement) {
-        observer.observe(tabsListElement, {
+      // ResizeObserver re-measures when the tab list's layout changes — catches
+      // container-driven resizes that window "resize" would miss (e.g. a sidebar opening).
+      const resizeObserver = new ResizeObserver(() => {
+        updateActiveIndicator();
+
+        if (hoveredTabRef.current) {
+          updateHoverIndicator(hoveredTabRef.current);
+        }
+      });
+
+      const tabListElement = tabsListRef.current;
+
+      if (tabListElement) {
+        mutationObserver.observe(tabListElement, {
           attributes: true,
           childList: true,
           subtree: true,
         });
-        tabsListElement.addEventListener('pointermove', handlePointerMove);
-        tabsListElement.addEventListener('pointerleave', handlePointerLeave);
-        tabsListElement.addEventListener('focusin', handleFocusIn);
-        tabsListElement.addEventListener('focusout', handleFocusOut);
+
+        resizeObserver.observe(tabListElement);
+
+        tabListElement.addEventListener('pointerover', handlePointerMove);
+        tabListElement.addEventListener('pointerleave', resetHoverIndicator);
+        tabListElement.addEventListener('focusin', handleFocusIn);
+        tabListElement.addEventListener('focusout', handleFocusOut);
       }
 
       return () => {
-        window.clearTimeout(timeoutId);
-        window.removeEventListener('resize', handleResize);
-        tabsListElement?.removeEventListener('pointermove', handlePointerMove);
-        tabsListElement?.removeEventListener('pointerleave', handlePointerLeave);
-        tabsListElement?.removeEventListener('focusin', handleFocusIn);
-        tabsListElement?.removeEventListener('focusout', handleFocusOut);
-        observer.disconnect();
+        clearTimeout(timeout);
+
+        mutationObserver.disconnect();
+        resizeObserver.disconnect();
+
+        if (tabListElement) {
+          tabListElement.removeEventListener('pointerover', handlePointerMove);
+          tabListElement.removeEventListener('pointerleave', resetHoverIndicator);
+          tabListElement.removeEventListener('focusin', handleFocusIn);
+          tabListElement.removeEventListener('focusout', handleFocusOut);
+        }
       };
-    }, [resetHoverIndicator, updateHoverIndicator, updateIndicator]);
+    }, [resetHoverIndicator, updateHoverIndicator, updateActiveIndicator]);
 
     return (
       <TabsIndicatorContext.Provider value={{ showIndicators, variant }}>
@@ -242,20 +292,26 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
             )}
             {...props}
           />
+          {/* Hover indicator — follows the pointer and keyboard focus */}
           <div
             className={cn(
               INDICATOR_BASE_CLASSNAME,
               'border-sky-200/80 bg-sky-100/70',
               hoverIndicatorClassName,
-              isHoverIndicatorResetting ? 'transition-[opacity]' : 'transition-[left,top,width,height,opacity]',
-              (!showIndicators || !isHoverIndicatorVisible) && 'opacity-0',
+              // While resetting, only transition opacity so the indicator fades out
+              // in place rather than sliding back toward the active tab.
+              hoverState === 'resetting' ? 'transition-[opacity]' : 'transition-[left,top,width,height,opacity]',
+              (!showIndicators || hoverState !== 'visible') && 'opacity-0',
             )}
             style={getIndicatorStyle(hoverIndicatorStyle, variant)}
           />
+          {/* Active indicator — follows the selected tab */}
           <div
             className={cn(
               INDICATOR_BASE_CLASSNAME,
               'bg-background border-transparent shadow-sm',
+              // Transitions are disabled until after the first reveal so the indicator
+              // appears at the correct position without animating in from 0,0.
               canAnimateActiveIndicator ? 'transition-[left,top,width,height,opacity]' : 'transition-none',
               activeIndicatorClassName,
               !showIndicators && 'opacity-0',
@@ -281,6 +337,8 @@ const TabsTrigger = React.forwardRef<
       data-slot="tabs-trigger"
       className={cn(
         "data-[state=active]:text-foreground relative z-10 inline-flex h-[calc(100%-1px)] flex-1 select-none items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        // Before the overlay indicators are ready, the trigger renders its own
+        // active background so there's no flash of unstyled content on load.
         !showIndicators && getInitialActiveTriggerClassName(variant),
         className,
       )}
