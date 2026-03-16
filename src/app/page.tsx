@@ -8,7 +8,7 @@ import ShowcaseSection from '@/components/showcase-section';
 
 export default function HomePage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <div className="mx-auto max-w-xl px-6 py-10">
       <div className="space-y-2">
         <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight">Animated Tabs</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
@@ -53,13 +53,16 @@ export default function HomePage() {
           <VerticalTabsShowcase />
         </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Installation"
-          description="Add the registry item directly to a shadcn project with the generated URL below."
-        >
+        <section className="space-y-4">
+          <div className="space-y-1.5">
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Installation</h2>
+            <p className="text-sm text-muted-foreground">
+              Add the registry item directly to a shadcn project with the generated URL below.
+            </p>
+          </div>
           <InstallationSection />
-        </ShowcaseSection>
+        </section>
       </div>
-    </main>
+    </div>
   );
 }

@@ -134,9 +134,12 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
     }, [measureTab]);
 
     // Moves the hover indicator to the given tab and makes it visible.
+    // Also stamps data-hovered on the tab so text color stays in sync with the indicator.
     const updateHoverIndicator = React.useCallback(
       (tab: HTMLElement) => {
+        hoveredTabRef.current?.removeAttribute('data-hovered');
         hoveredTabRef.current = tab;
+        tab.setAttribute('data-hovered', 'true');
 
         setHoverState('visible');
 
@@ -151,6 +154,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
     // Switches to "resetting" so the indicator fades out without sliding back,
     // then snaps it to the active tab position so the next hover starts from there.
     const resetHoverIndicator = React.useCallback(() => {
+      hoveredTabRef.current?.removeAttribute('data-hovered');
       hoveredTabRef.current = null;
 
       setHoverState('resetting');
@@ -284,7 +288,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
             ref={ref}
             data-slot="tabs-list"
             className={cn(
-              'bg-muted text-muted-foreground relative inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]',
+              'bg-muted text-muted-foreground relative inline-flex h-9 w-fit items-center justify-center gap-[3px] rounded-lg p-[3px]',
               className,
             )}
             {...props}
@@ -333,7 +337,7 @@ const TabsTrigger = React.forwardRef<
       ref={ref}
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:text-foreground relative z-10 inline-flex h-[calc(100%-1px)] flex-1 select-none items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "data-[state=active]:text-foreground data-[hovered=true]:text-foreground relative z-10 inline-flex h-[calc(100%-1px)] flex-1 select-none items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         // Before the overlay indicators are ready, the trigger renders its own
         // active background so there's no flash of unstyled content on load.
         !showIndicators && INITIAL_ACTIVE_TRIGGER_CLASSNAMES[variant],

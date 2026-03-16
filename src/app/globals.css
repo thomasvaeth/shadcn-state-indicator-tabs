@@ -62,13 +62,6 @@ html {
   }
 }
 
-.container {
-  width: 100%;
-  max-width: 80rem;
-  margin-inline: auto;
-  padding-inline: 1rem;
-}
-
 ::selection {
   background: rgba(24, 24, 27, 0.16);
   color: #09090b;
