@@ -18,39 +18,8 @@ export default function HomePage() {
       </div>
 
       <div className="mt-10 space-y-12">
-        <ShowcaseSection
-          title="Default"
-          description="The base registry version keeps the Radix tabs API intact and adds an animated active indicator with a separate hover and focus follower."
-        >
+        <ShowcaseSection>
           <HorizontalTabsShowcase />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Manual Activation"
-          description="This version uses Radix manual activation so arrow keys move focus first and Enter or Space commits the selection."
-        >
-          <ManualActivationTabsShowcase />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Scrollable"
-          description="Nine options show the overflow case, and selecting one smoothly scrolls it toward the center when space allows."
-        >
-          <ScrollableTabsShowcase />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Underline"
-          description="An underline-only treatment keeps the tabs lighter and more navigation-like while preserving the same interaction model."
-        >
-          <UnderlineTabsShowcase />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Vertical"
-          description="A stacked layout for settings-style pages, side panels, and dashboards where tabs need to read more like section navigation."
-        >
-          <VerticalTabsShowcase />
         </ShowcaseSection>
 
         <section className="space-y-4">
@@ -61,6 +30,38 @@ export default function HomePage() {
             </p>
           </div>
           <InstallationSection />
+        </section>
+
+        <section className="space-y-8">
+          <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Examples</h2>
+
+          <ShowcaseSection
+            title="Manual Activation"
+            description="Arrow keys move focus first and Enter or Space commits the selection."
+          >
+            <ManualActivationTabsShowcase />
+          </ShowcaseSection>
+
+          <ShowcaseSection
+            title="Scrollable"
+            description="Selecting a tab smoothly scrolls it toward the center when space allows."
+          >
+            <ScrollableTabsShowcase />
+          </ShowcaseSection>
+
+          <ShowcaseSection
+            title="Underline"
+            description="An underline-only treatment keeps the tabs lighter and more navigation-like."
+          >
+            <UnderlineTabsShowcase />
+          </ShowcaseSection>
+
+          <ShowcaseSection
+            title="Vertical"
+            description="A stacked layout for settings-style pages, side panels, and dashboards."
+          >
+            <VerticalTabsShowcase />
+          </ShowcaseSection>
         </section>
       </div>
     </div>
