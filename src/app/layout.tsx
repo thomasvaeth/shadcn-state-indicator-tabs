@@ -15,9 +15,9 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className="bg-background text-foreground flex min-h-screen flex-col antialiased">
+      <body className="flex flex-col min-h-screen bg-background text-foreground antialiased">
         <header className="border-b py-4">
-          <div className="mx-auto max-w-7xl px-6 flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4 mx-auto max-w-7xl px-6">
             <h1 className="text-lg font-medium">Shadcn Animated Tabs</h1>
             <Link className="text-muted-foreground text-sm hover:text-foreground" href="/r/animated-tabs.json">
               Registry JSON
@@ -28,8 +28,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <main>{children}</main>
 
         <footer className="mt-auto border-t py-4">
-          <div className="mx-auto max-w-7xl px-6 flex items-center justify-between gap-4 text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} Thomas Vaeth</p>
+          <div className="flex items-center justify-between gap-4 mx-auto max-w-7xl px-6 text-muted-foreground text-sm">
+            <p>&copy; Thomas Vaeth. Coded with Claude Code in {new Date().getFullYear()}.</p>
             <Link className="hover:text-foreground" href="https://ui.shadcn.com/docs/registry/getting-started">
               Registry docs
             </Link>

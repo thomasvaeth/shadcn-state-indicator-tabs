@@ -288,7 +288,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
             ref={ref}
             data-slot="tabs-list"
             className={cn(
-              'bg-muted text-muted-foreground relative inline-flex h-9 w-fit items-center justify-center gap-[3px] rounded-lg p-[3px]',
+              'relative inline-flex items-center justify-center gap-[3px] h-9 w-fit p-[3px] bg-muted text-muted-foreground rounded-lg',
               className,
             )}
             {...props}
@@ -297,7 +297,7 @@ const TabsList = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.List>,
           <div
             className={cn(
               INDICATOR_BASE_CLASSNAMES,
-              'border-sky-200/80 bg-sky-100/70',
+              'bg-sky-100/70 border-sky-200/80',
               hoverIndicatorClassName,
               // While resetting, only transition opacity so the indicator fades out
               // in place rather than sliding back toward the active tab.
@@ -337,7 +337,7 @@ const TabsTrigger = React.forwardRef<
       ref={ref}
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:text-foreground data-[hovered=true]:text-foreground relative z-10 inline-flex h-[calc(100%-1px)] flex-1 select-none items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 h-[calc(100%-1px)] border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap select-none rounded-md transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[hovered=true]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         // Before the overlay indicators are ready, the trigger renders its own
         // active background so there's no flash of unstyled content on load.
         !showIndicators && INITIAL_ACTIVE_TRIGGER_CLASSNAMES[variant],
@@ -357,7 +357,7 @@ const TabsContent = React.forwardRef<
     <TabsPrimitive.Content
       ref={ref}
       data-slot="tabs-content"
-      className={cn('mt-2 flex-1 outline-none', className)}
+      className={cn('flex-1 mt-2 outline-none', className)}
       {...props}
     />
   );

@@ -42,6 +42,14 @@ html {
   }
 }
 
+@utility scrollbar-hidden {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 ::selection {
   background: rgba(24, 24, 27, 0.16);
   color: #09090b;

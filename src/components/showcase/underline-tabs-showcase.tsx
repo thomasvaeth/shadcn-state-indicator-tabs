@@ -5,18 +5,18 @@ export default function UnderlineTabsShowcase() {
     <div>
       <Tabs defaultValue="overview">
         <TabsList
-          className="h-10 text-zinc-500 bg-transparent rounded-none"
-          activeIndicatorClassName="rounded-full border-0 bg-zinc-950 shadow-none"
-          hoverIndicatorClassName="rounded-full border-0 bg-zinc-300"
+          className="h-10 bg-transparent text-zinc-500 rounded-none"
+          activeIndicatorClassName="border-0 bg-zinc-950 rounded-full shadow-none"
+          hoverIndicatorClassName="border-0 bg-zinc-300 rounded-full"
           variant="line"
         >
-          <TabsTrigger className="data-[state=active]:text-zinc-950 rounded-none border-0 px-4" value="overview">
+          <TabsTrigger className="border-0 px-4 rounded-none data-[state=active]:text-zinc-950" value="overview">
             Overview
           </TabsTrigger>
-          <TabsTrigger className="data-[state=active]:text-zinc-950 rounded-none border-0 px-4" value="analytics">
+          <TabsTrigger className="border-0 px-4 rounded-none data-[state=active]:text-zinc-950" value="analytics">
             Analytics
           </TabsTrigger>
-          <TabsTrigger className="data-[state=active]:text-zinc-950 rounded-none border-0 px-4" value="reports">
+          <TabsTrigger className="border-0 px-4 rounded-none data-[state=active]:text-zinc-950" value="reports">
             Reports
           </TabsTrigger>
         </TabsList>

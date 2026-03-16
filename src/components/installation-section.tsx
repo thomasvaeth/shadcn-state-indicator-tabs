@@ -27,18 +27,18 @@ export default function InstallationSection() {
 
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-lg border">
+      <div className="overflow-hidden border rounded-lg">
         {/* Package manager tab bar */}
-        <div className="bg-muted/50 flex items-center justify-between border-b px-3">
+        <div className="flex items-center justify-between border-b px-3 bg-muted/50">
           <div className="flex">
             {(Object.keys(PACKAGE_MANAGERS) as PackageManager[]).map((manager) => (
               <button
                 key={manager}
                 onClick={() => setActiveManager(manager)}
                 className={cn(
-                  'cursor-pointer px-3 py-2 text-xs transition-colors',
+                  'px-3 py-2 text-xs cursor-pointer transition-colors',
                   activeManager === manager
-                    ? 'border-b border-foreground font-medium text-foreground'
+                    ? 'border-b border-foreground text-foreground font-medium'
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >
@@ -51,14 +51,14 @@ export default function InstallationSection() {
           <button
             onClick={handleCopy}
             aria-label="Copy command"
-            className="text-muted-foreground hover:text-foreground cursor-pointer rounded p-1 transition-colors"
+            className="p-1 text-muted-foreground hover:text-foreground rounded cursor-pointer transition-colors"
           >
             {copied ? <Check size={14} /> : <Copy size={14} />}
           </button>
         </div>
 
         {/* Command */}
-        <pre className="font-mono overflow-x-auto px-4 py-3 text-sm">
+        <pre className="overflow-x-auto px-4 py-3 font-mono text-sm">
           <code>{command}</code>
         </pre>
       </div>

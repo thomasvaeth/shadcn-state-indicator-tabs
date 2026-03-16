@@ -4,7 +4,7 @@ export default function VerticalTabsShowcase() {
   return (
     <div>
       <Tabs defaultValue="account">
-        <TabsList className="sm:h-auto sm:w-40 sm:flex-col sm:items-stretch">
+        <TabsList className="sm:flex-col sm:items-stretch sm:h-auto sm:w-40">
           <TabsTrigger className="sm:justify-start" value="account">
             Account
           </TabsTrigger>

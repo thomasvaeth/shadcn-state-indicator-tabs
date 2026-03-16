@@ -47,23 +47,21 @@ export default function ScrollableTabsShowcase() {
   }, [value]);
 
   return (
-    <div className="w-full">
+    <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hidden">
       <Tabs value={value} onValueChange={setValue}>
-        <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hidden">
-          <TabsList className="mb-0 min-w-max">
-            {options.map((option) => (
-              <TabsTrigger
-                key={option.value}
-                ref={(node) => {
-                  triggerRefs.current[option.value] = node;
-                }}
-                value={option.value}
-              >
-                {option.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
+        <TabsList>
+          {options.map((option) => (
+            <TabsTrigger
+              key={option.value}
+              ref={(node) => {
+                triggerRefs.current[option.value] = node;
+              }}
+              value={option.value}
+            >
+              {option.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
       </Tabs>
     </div>
   );

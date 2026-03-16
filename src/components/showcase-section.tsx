@@ -11,13 +11,17 @@ export default function ShowcaseSection({ title, description, children }: Showca
     <section className="space-y-4">
       {(title || description) && (
         <div className="space-y-1.5">
-          {title && <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">{title}</h3>}
-          {description && <p className="max-w-2xl text-sm text-muted-foreground">{description}</p>}
+          {title && (
+            <h3 className="mt-12 scroll-m-28 text-lg font-medium tracking-tight [&+p]:mt-4! *:[code]:text-xl">
+              {title}
+            </h3>
+          )}
+          {description && <p className="leading-relaxed [&:not(:first-child)]:mt-6">{description}</p>}
         </div>
       )}
 
-      <div className="rounded-lg border">
-        <div className="flex min-h-[280px] items-center justify-center p-10">{children}</div>
+      <div className="mt-4 mb-12 overflow-hidden border rounded-xl">
+        <div className="flex items-center justify-center min-h-[280px] p-10">{children}</div>
       </div>
     </section>
   );

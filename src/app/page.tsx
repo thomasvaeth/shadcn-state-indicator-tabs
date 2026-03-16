@@ -10,8 +10,8 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-xl px-6 py-10">
       <div className="space-y-2">
-        <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight">Animated Tabs</h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">
+        <h1 className="scroll-m-24 text-3xl font-semibold tracking-tight">Animated Tabs</h1>
+        <p className="md:max-w-[80%] text-muted-foreground text-[1.05rem] sm:text-base sm:text-balance">
           A shadcn registry item that keeps the tabs API familiar while adding an animated active indicator and a
           separate hover and focus follower.
         </p>
