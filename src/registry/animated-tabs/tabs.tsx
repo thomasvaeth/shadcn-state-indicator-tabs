@@ -337,7 +337,7 @@ const TabsTrigger = React.forwardRef<
       ref={ref}
       data-slot="tabs-trigger"
       className={cn(
-        "relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 h-[calc(100%-1px)] border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap select-none rounded-md transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[hovered=true]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative z-10 inline-flex flex-1 items-center justify-center gap-1.5 h-[calc(100%-1px)] border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap select-none rounded-md cursor-pointer transition-[background-color,color,box-shadow] focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[hovered=true]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         // Before the overlay indicators are ready, the trigger renders its own
         // active background so there's no flash of unstyled content on load.
         !showIndicators && INITIAL_ACTIVE_TRIGGER_CLASSNAMES[variant],

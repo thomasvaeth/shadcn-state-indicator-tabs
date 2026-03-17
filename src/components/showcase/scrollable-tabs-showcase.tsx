@@ -18,7 +18,7 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export default function ScrollableTabsShowcase() {
-  const [value, setValue] = React.useState(options[0]?.value ?? 'option-1');
+  const [value, setValue] = React.useState(options[4]?.value ?? 'option-5');
   const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
   // Keyed by tab value so the effect can look up the active trigger's DOM node.
   const triggerRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});

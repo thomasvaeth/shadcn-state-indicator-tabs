@@ -10,10 +10,10 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-xl px-6 py-10">
       <div className="space-y-2">
-        <h1 className="scroll-m-24 text-3xl font-semibold tracking-tight">Animated Tabs</h1>
-        <p className="md:max-w-[80%] text-muted-foreground text-[1.05rem] sm:text-base sm:text-balance">
-          A shadcn registry item that keeps the tabs API familiar while adding an animated active indicator and a
-          separate hover and focus follower.
+        <h1 className="scroll-m-24 text-3xl font-semibold tracking-tight">State Indicator Tabs</h1>
+        <p className="text-muted-foreground text-[1.05rem] sm:text-base sm:text-balance">
+          A shadcn registry item that keeps the tabs API familiar while adding a separate indicator for each state —
+          active and hover.
         </p>
       </div>
 
@@ -24,16 +24,17 @@ export default function HomePage() {
 
         <section className="space-y-4">
           <div className="space-y-1.5">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Installation</h2>
-            <p className="text-sm text-muted-foreground">
-              Add the registry item directly to a shadcn project with the generated URL below.
-            </p>
+            <h2 className="font-heading [&+]*:[code]:text-xl mt-10 scroll-m-28 text-xl font-medium tracking-tight first:mt-0 lg:mt-12 [&+.steps]:mt-0! [&+.steps>h3]:mt-4! [&+h3]:mt-6! [&+p]:mt-4!">
+              Installation
+            </h2>
           </div>
           <InstallationSection />
         </section>
 
-        <section className="space-y-8">
-          <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">Examples</h2>
+        <section className="space-y-4">
+          <h2 className="font-heading [&+]*:[code]:text-xl mt-10 scroll-m-28 text-xl font-medium tracking-tight first:mt-0 lg:mt-12 [&+.steps]:mt-0! [&+.steps>h3]:mt-4! [&+h3]:mt-6! [&+p]:mt-4!">
+            Examples
+          </h2>
 
           <ShowcaseSection
             title="Manual Activation"
