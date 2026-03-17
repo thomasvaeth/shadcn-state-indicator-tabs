@@ -11,9 +11,7 @@ export default function ComponentPreview({ title, description, children }: Compo
     <div className="space-y-4">
       {(title || description) && (
         <div className="space-y-1.5">
-          {title && (
-            <h3 className="scroll-m-28 text-lg font-medium tracking-tight [&+p]:mt-4! *:[code]:text-xl">{title}</h3>
-          )}
+          {title && <h3 className="text-lg font-medium tracking-tight [&+p]:mt-4!">{title}</h3>}
           {description && <p className="leading-relaxed [&:not(:first-child)]:mt-6">{description}</p>}
         </div>
       )}

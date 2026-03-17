@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import GitHubButton from '@/components/github-button';
 
 import './globals.css';
 
@@ -15,17 +14,8 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className="bg-background text-foreground antialiased">
-        <header className="border-b py-4">
-          <div className="flex items-center justify-between gap-4 mx-auto max-w-7xl px-6">
-            <h1 className="text-lg font-medium">Shadcn State Indicator Tabs</h1>
-            <GitHubButton />
-          </div>
-        </header>
-
-        <main className="px-6 py-10">
-          <div className="mx-auto max-w-xl space-y-12">{children}</div>
-        </main>
+      <body className="px-6 py-10 bg-background text-foreground antialiased">
+        <main className="mx-auto max-w-xl space-y-12">{children}</main>
       </body>
     </html>
   );
