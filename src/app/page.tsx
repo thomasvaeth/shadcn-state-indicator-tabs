@@ -15,8 +15,8 @@ export default function HomePage() {
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold tracking-tight">State Indicator Tabs</h1>
           <p className="text-muted-foreground text-[1.05rem] sm:text-base sm:text-balance">
-            A shadcn registry item that keeps the tabs API familiar while adding a separate indicator for each state —
-            active and hover.
+            A shadcn/ui registry item that keeps the tabs API familiar while adding a separate indicator for each state
+            — active and hover.
           </p>
 
           <Link

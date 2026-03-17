@@ -4,9 +4,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'State Indicator Tabs',
+  title: 'State Indicator Tabs → Thomas Vaeth',
   description:
-    'A shadcn registry item that keeps the tabs API familiar while adding a separate indicator for each state — active and hover.',
+    'A shadcn/ui registry item that keeps the tabs API familiar while adding a separate indicator for each state — active and hover.',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: 'State Indicator Tabs',
+    title: 'State Indicator Tabs → Thomas Vaeth',
     description:
-      'A shadcn registry item that keeps the tabs API familiar while adding a separate indicator for each state — active and hover.',
+      'A shadcn/ui registry item that keeps the tabs API familiar while adding a separate indicator for each state — active and hover.',
     images: ['/seo.jpg'],
   },
 };

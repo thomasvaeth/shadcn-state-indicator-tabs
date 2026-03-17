@@ -1,13 +1,13 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "animated-tabs",
+  "name": "state-indicator-tabs",
   "homepage": "http://localhost:3000",
   "items": [
     {
-      "name": "animated-tabs",
+      "name": "state-indicator-tabs",
       "type": "registry:ui",
-      "title": "Animated Tabs",
-      "description": "Shadcn-style tabs with an animated active indicator and a subtle hover and focus follower.",
+      "title": "State Indicator Tabs",
+      "description": "A shadcn/ui registry item that keeps the tabs API familiar while adding a separate indicator for each state — active and hover.",
       "author": "Thomas Vaeth",
       "dependencies": ["@radix-ui/react-tabs"],
       "files": [

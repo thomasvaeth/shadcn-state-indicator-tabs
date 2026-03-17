@@ -9,10 +9,10 @@ const PACKAGE_MANAGERS = ['pnpm', 'npm', 'yarn', 'bun'] as const;
 type PackageManager = (typeof PACKAGE_MANAGERS)[number];
 
 const INSTALL_COMMANDS: Record<PackageManager, string> = {
-  pnpm: 'pnpm dlx shadcn@latest add https://your-domain.com/r/animated-tabs.json',
-  npm: 'npx shadcn@latest add https://your-domain.com/r/animated-tabs.json',
-  yarn: 'npx shadcn@latest add https://your-domain.com/r/animated-tabs.json',
-  bun: 'bunx shadcn@latest add https://your-domain.com/r/animated-tabs.json',
+  pnpm: 'pnpm dlx shadcn@latest add https://your-domain.com/r/state-indicator-tabs.json',
+  npm: 'npx shadcn@latest add https://your-domain.com/r/state-indicator-tabs.json',
+  yarn: 'npx shadcn@latest add https://your-domain.com/r/state-indicator-tabs.json',
+  bun: 'bunx shadcn@latest add https://your-domain.com/r/state-indicator-tabs.json',
 };
 
 export default function InstallationSection() {
