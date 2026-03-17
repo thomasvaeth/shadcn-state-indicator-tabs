@@ -12,29 +12,29 @@ const options = Array.from({ length: 9 }, (_, index) => {
   };
 });
 
-// Keeps a scroll target within the valid scroll range of the container.
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
 export default function ScrollableTabsShowcase() {
   const [value, setValue] = useState(options[4]?.value ?? 'option-5');
+
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  // Keyed by tab value so the effect can look up the active trigger's DOM node.
+  // The key are the Tab values (not the index or labels), so the useEffect can get the right trigger for the scrolling
+  // calculation
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  // Distinguishes the initial load (instant scroll) from subsequent selections (smooth scroll).
+  // Th initial page load will have auto scroll behavior, but the subsequent selections will be smooth scroll
   const hasMountedRef = useRef(false);
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const activeTrigger = triggerRefs.current[value];
+
     if (!scrollContainer || !activeTrigger) {
       return;
     }
 
-    // Scroll position that places the active trigger in the center of the container:
-    // start at the trigger's left edge, subtract half the container to align the left
-    // edge to center, then add back half the trigger's width to land on its midpoint.
+    // Center the active trigger within the scroll container if it is possible to scroll to that position
     const targetLeft = activeTrigger.offsetLeft - scrollContainer.clientWidth / 2 + activeTrigger.offsetWidth / 2;
     const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
 

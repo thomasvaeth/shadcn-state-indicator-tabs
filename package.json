@@ -2,7 +2,6 @@
   "name": "@thomasvaeth/state-indicator-tabs",
   "version": "0.1.0",
   "private": true,
-  "description": "Next.js showcase and shadcn registry for state indicator tabs.",
   "type": "module",
   "scripts": {
     "dev": "pnpm registry:build && next dev",
