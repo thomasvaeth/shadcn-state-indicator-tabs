@@ -31,15 +31,11 @@ html {
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
-  }
-
-  a {
-    color: inherit;
+    @apply font-sans antialiased text-foreground bg-background;
   }
 }
 
-@utility scrollbar-hidden {
+@utility no-scrollbar {
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
@@ -48,6 +44,6 @@ html {
 }
 
 ::selection {
-  background: rgba(24, 24, 27, 0.16);
-  color: #09090b;
+  background: var(--foreground);
+  color: var(--background);
 }

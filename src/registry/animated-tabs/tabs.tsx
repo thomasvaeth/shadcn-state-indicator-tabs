@@ -265,7 +265,6 @@ const TabsList = forwardRef<ComponentRef<typeof TabsPrimitive.List>, TabsListPro
       if (tabListElement) {
         mutationObserver.observe(tabListElement, {
           attributes: true,
-          childList: true,
           subtree: true,
         });
 
@@ -308,7 +307,7 @@ const TabsList = forwardRef<ComponentRef<typeof TabsPrimitive.List>, TabsListPro
           <div
             className={cn(
               INDICATOR_BASE_CLASSNAMES,
-              'bg-sky-100/70 border-sky-200/80',
+              'bg-background/60 border-border',
               hoverIndicatorClassName,
               // While resetting, only transition opacity so the indicator fades out
               // in place rather than sliding back toward the active tab.

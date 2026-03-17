@@ -15,7 +15,7 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className="px-6 py-10 bg-background text-foreground antialiased">
+      <body className="px-6 py-10">
         <main className="mx-auto max-w-xl space-y-12">{children}</main>
       </body>
     </html>

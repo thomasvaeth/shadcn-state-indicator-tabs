@@ -47,7 +47,7 @@ export default function ScrollableTabsShowcase() {
   }, [value]);
 
   return (
-    <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hidden">
+    <div ref={scrollContainerRef} className="overflow-x-auto no-scrollbar">
       <Tabs value={value} onValueChange={setValue}>
         <TabsList>
           {options.map((option) => (
