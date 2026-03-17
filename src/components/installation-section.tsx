@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -16,8 +16,8 @@ const INSTALL_COMMANDS: Record<PackageManager, string> = {
 };
 
 export default function InstallationSection() {
-  const [activeManager, setActiveManager] = React.useState<PackageManager>('pnpm');
-  const [copied, setCopied] = React.useState(false);
+  const [activeManager, setActiveManager] = useState<PackageManager>('pnpm');
+  const [copied, setCopied] = useState(false);
 
   const installCommand = INSTALL_COMMANDS[activeManager];
 

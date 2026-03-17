@@ -28,13 +28,10 @@ html {
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    box-sizing: border-box;
   }
 
   body {
     @apply bg-background text-foreground font-sans;
-    min-width: 320px;
-    margin: 0;
   }
 
   a {

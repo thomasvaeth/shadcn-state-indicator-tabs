@@ -1,9 +1,9 @@
-import * as React from 'react';
+import type { ReactNode } from 'react';
 
 type ComponentPreviewProps = {
   title?: string;
   description?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export default function ComponentPreview({ title, description, children }: ComponentPreviewProps) {

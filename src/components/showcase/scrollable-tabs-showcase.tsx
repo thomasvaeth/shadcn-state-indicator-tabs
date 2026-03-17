@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
 
 const options = Array.from({ length: 9 }, (_, index) => {
@@ -18,14 +18,14 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export default function ScrollableTabsShowcase() {
-  const [value, setValue] = React.useState(options[4]?.value ?? 'option-5');
-  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const [value, setValue] = useState(options[4]?.value ?? 'option-5');
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   // Keyed by tab value so the effect can look up the active trigger's DOM node.
-  const triggerRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
+  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   // Distinguishes the initial load (instant scroll) from subsequent selections (smooth scroll).
-  const hasMountedRef = React.useRef(false);
+  const hasMountedRef = useRef(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     const activeTrigger = triggerRefs.current[value];
     if (!scrollContainer || !activeTrigger) {

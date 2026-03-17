@@ -1,7 +1,7 @@
-import * as React from 'react';
+import type { ReactNode } from 'react';
 
 type SectionProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export default function Section({ children }: SectionProps) {
