@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Tabs, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/registry/state-indicator-tabs/tabs';
 
 const options = Array.from({ length: 9 }, (_, index) => {
   const value = `option-${index + 1}`;

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/registry/state-indicator-tabs/tabs';
 
 export default function HorizontalTabsShowcase() {
   return (

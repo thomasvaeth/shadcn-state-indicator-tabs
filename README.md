@@ -6,12 +6,12 @@ A shadcn/ui registry item that keeps the tabs API familiar while adding a separa
 
 - A Next.js App Router showcase with live demos and install instructions
 - The component source at `src/registry/animated-tabs/tabs.tsx`
-- A `registry.json` definition that builds to `public/r/animated-tabs.json`
+- A `registry.json` definition that builds to `public/r/state-indicator-tabs.json`
 
 ## Install
 
 ```bash
-pnpm dlx shadcn@latest add https://your-domain.com/r/animated-tabs.json
+pnpm dlx shadcn@latest add https://shadcn-state-indicator-tabs.vercel.app/r/state-indicator-tabs.json
 ```
 
 The installed file lands as `components/ui/tabs.tsx` in the consuming app.

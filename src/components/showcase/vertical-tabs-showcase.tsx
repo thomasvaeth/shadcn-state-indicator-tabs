@@ -1,4 +1,4 @@
-import { Tabs, TabsList, TabsTrigger } from '@/registry/animated-tabs/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/registry/state-indicator-tabs/tabs';
 
 export default function VerticalTabsShowcase() {
   return (

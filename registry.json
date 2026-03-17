@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "state-indicator-tabs",
-  "homepage": "http://localhost:3000",
+  "homepage": "https://shadcn-state-indicator-tabs.vercel.app",
   "items": [
     {
       "name": "state-indicator-tabs",
@@ -12,7 +12,7 @@
       "dependencies": ["@radix-ui/react-tabs"],
       "files": [
         {
-          "path": "src/registry/animated-tabs/tabs.tsx",
+          "path": "src/registry/state-indicator-tabs/tabs.tsx",
           "type": "registry:ui"
         }
       ]
