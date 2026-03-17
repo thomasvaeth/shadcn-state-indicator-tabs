@@ -20,7 +20,7 @@ export default function HomePage() {
           </p>
 
           <Link
-            href="https://github.com/thomasvaeth/shadcn-tabs"
+            href="https://github.com/thomasvaeth/shadcn-state-indicator-tabs"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-sm font-medium rounded-md"
