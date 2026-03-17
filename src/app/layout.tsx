@@ -23,7 +23,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
         </header>
 
-        <main>{children}</main>
+        <main className="px-6 py-10">
+          <div className="mx-auto max-w-xl space-y-12">{children}</div>
+        </main>
       </body>
     </html>
   );

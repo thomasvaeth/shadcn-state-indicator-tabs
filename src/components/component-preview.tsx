@@ -1,14 +1,14 @@
 import * as React from 'react';
 
-type ShowcaseSectionProps = {
+type ComponentPreviewProps = {
   title?: string;
   description?: string;
   children: React.ReactNode;
 };
 
-export default function ShowcaseSection({ title, description, children }: ShowcaseSectionProps) {
+export default function ComponentPreview({ title, description, children }: ComponentPreviewProps) {
   return (
-    <section className="space-y-4">
+    <div className="space-y-4">
       {(title || description) && (
         <div className="space-y-1.5">
           {title && (
@@ -21,6 +21,6 @@ export default function ShowcaseSection({ title, description, children }: Showca
       <div className="mb-12 overflow-hidden border rounded-xl">
         <div className="flex items-center justify-center min-h-[280px] p-10">{children}</div>
       </div>
-    </section>
+    </div>
   );
 }
