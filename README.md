@@ -5,7 +5,7 @@ A shadcn/ui registry item that keeps the tabs API familiar while adding a separa
 ## What it includes
 
 - A Next.js App Router showcase with live demos and install instructions
-- The component source at `src/registry/animated-tabs/tabs.tsx`
+- The component source at `src/registry/state-indicator-tabs/tabs.tsx`
 - A `registry.json` definition that builds to `public/r/state-indicator-tabs.json`
 
 ## Install
